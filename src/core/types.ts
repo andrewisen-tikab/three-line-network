@@ -6,6 +6,14 @@ import * as THREE from "three";
 export type ID = number;
 
 /**
+ * ArbitraryPoint represents a point in 3D space.
+ * It can be either a {@link BaseNode} or a {@link BaseLink}.
+ */
+export type ArbitraryPoint = {
+  position: THREE.Vector3;
+};
+
+/**
  * Node represents a node in the graph.
  */
 export type BaseNode = {

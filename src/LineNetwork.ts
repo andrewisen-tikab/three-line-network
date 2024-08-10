@@ -1,11 +1,29 @@
 import * as THREE from "three";
-import { type BaseLink, BaseNode } from "./core/types";
+import { Link } from "./core/Link";
+import { Node } from "./core/Node";
+import { Point } from "./core/Point";
 
 // Create a material for the lines
-const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
+/**
+ * Class representing a network of nodes and links.
+ */
 export class LineNetwork extends THREE.EventDispatcher {
-  init(nodes: BaseNode[], links: BaseLink[], parent: THREE.Object3D) {
+  private _nodes: Node[] = [];
+
+  private _links: Link[] = [];
+
+  /**
+   * Initialize the network with nodes and links.
+   * @param nodes - List of nodes in the network.
+   * @param links - List of links between nodes in the network.
+   * @param parent - Parent object to add the lines to.
+   */
+  init(nodes: Node[], links: Link[], parent: THREE.Object3D) {
+    this._nodes = nodes;
+    this._links = links;
+
     // Function to create a line between two points
     const createLine = (start: THREE.Vector3, end: THREE.Vector3) => {
       const geometry = new THREE.BufferGeometry().setFromPoints([start, end]);
@@ -22,5 +40,38 @@ export class LineNetwork extends THREE.EventDispatcher {
         parent.add(line);
       }
     });
+  }
+
+  /**
+   * Generate nodes from a list of points.
+   * @param points - List of points to generate nodes from.
+   * @param parent - Parent object to add the lines to.
+   */
+  generate(points: Point[], parent: THREE.Object3D) {
+    const nodes = points.map((point, index) => new Node(index, point.position));
+    const links = nodes
+      .slice(0, -1)
+      .map((_node, index) => new Link(index, index + 1));
+
+    this.init(nodes, links, parent);
+  }
+
+  /**
+   * @returns List of nodes in the network.
+   */
+  getNodes(): Readonly<Node[]> {
+    return this._nodes;
+  }
+
+  /**
+   * @returns List of links in the network.
+   */
+  getLinks(): Readonly<Link[]> {
+    return this._links;
+  }
+
+  dispose() {
+    this._nodes = [];
+    this._links = [];
   }
 }

@@ -1,1 +1,1 @@
-export const EXAMPLES = ["basic"];
+export const EXAMPLES = ["basic", "generate"];
