@@ -6,9 +6,10 @@ import { AbstractLineNetwork } from "./types";
 import { Line2 } from "three/addons/lines/Line2.js";
 import { LineGeometry } from "three/addons/lines/LineGeometry.js";
 import { LineMaterial } from "three/addons/lines/LineMaterial.js";
+import { COLORS } from "./config";
 
 // Create a material for the lines
-const lineMaterial = new LineMaterial({ color: 0xff0000, linewidth: 5 });
+const lineMaterial = new LineMaterial({ color: COLORS.tertiary, linewidth: 5 });
 
 const createLinkVisualization = (
   start: THREE.Vector3,
@@ -21,13 +22,22 @@ const createLinkVisualization = (
   return line;
 };
 
-const geometry = new THREE.SphereGeometry(1 / 4, 32, 16);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const nodeGeometry = new THREE.SphereGeometry(1 / 4, 32, 16);
+const nodeMaterial = new THREE.MeshBasicMaterial({ color: COLORS.secondary });
 
 const createNodeVisualization = (position: THREE.Vector3): THREE.Mesh => {
-  const mesh = new THREE.Mesh(geometry, material);
+  const mesh = new THREE.Mesh(nodeGeometry, nodeMaterial);
   mesh.position.copy(position);
   return mesh;
+};
+
+const playerGeometry = new THREE.CapsuleGeometry(1, 1, 4, 8);
+const playerMaterial = new THREE.MeshBasicMaterial({ color: COLORS.primary });
+
+const createPlayerVisualization = (position: THREE.Vector3): THREE.Mesh => {
+  const capsule = new THREE.Mesh(playerGeometry, playerMaterial);
+  capsule.position.copy(position);
+  return capsule;
 };
 
 /**
@@ -40,6 +50,8 @@ export class LineNetwork
   private _nodes: Node[] = [];
 
   private _links: Link[] = [];
+
+  private _player?: THREE.Mesh;
 
   init(nodes: Node[], links: Link[], parent: THREE.Object3D) {
     this._nodes = nodes;
@@ -64,6 +76,9 @@ export class LineNetwork
         parent.add(node2);
       }
     });
+
+    this._player = createPlayerVisualization(nodes[0].position);
+    parent.add(this._player);
   }
 
   generate(points: Point[], parent: THREE.Object3D) {

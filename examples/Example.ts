@@ -55,7 +55,7 @@ export class Example {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    const bgColor = new THREE.Color(0x263238);
+    const bgColor = new THREE.Color(TLN.COLORS.background);
     this.renderer.setClearColor(bgColor, 1);
 
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
