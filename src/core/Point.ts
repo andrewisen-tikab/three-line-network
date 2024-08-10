@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import { type ArbitraryPoint } from "./types";
+import { type AbstractPoint } from "./types";
 
 /**
  * Point represents a point in 3D space.
  */
-export class Point implements ArbitraryPoint {
+export class Point implements AbstractPoint {
   position: THREE.Vector3;
 
   constructor(position: THREE.Vector3) {

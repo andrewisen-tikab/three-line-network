@@ -6,10 +6,10 @@ import * as THREE from "three";
 export type ID = number;
 
 /**
- * ArbitraryPoint represents a point in 3D space.
+ * AbstractPoint represents a point in 3D space.
  * It can be either a {@link BaseNode} or a {@link BaseLink}.
  */
-export type ArbitraryPoint = {
+export type AbstractPoint = {
   position: THREE.Vector3;
 };
 

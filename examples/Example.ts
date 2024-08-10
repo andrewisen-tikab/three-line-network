@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import CameraControls from "camera-controls";
+import * as TLN from "../src";
 
 CameraControls.install({ THREE });
 import Stats from "three/addons/libs/stats.module.js";
@@ -38,6 +39,8 @@ export class Example {
    * A camera control for three.js, similar to THREE.OrbitControls yet supports smooth transitions and more features.
    */
   public cameraControls: CameraControls;
+
+  public network: TLN.LineNetwork;
 
   constructor() {
     const stats = new Stats();
@@ -79,6 +82,8 @@ export class Example {
     const axesHelper = new THREE.AxesHelper(size);
     this.scene.add(axesHelper);
 
+    this.network = new TLN.LineNetwork();
+
     const render = (): void => {
       this.renderer.render(this.scene, camera);
     };
@@ -88,6 +93,8 @@ export class Example {
       const delta = clock.getDelta();
       this.cameraControls.update(delta);
       camera.updateMatrixWorld();
+
+      this.network.update();
 
       // Render
       requestAnimationFrame(animate);
