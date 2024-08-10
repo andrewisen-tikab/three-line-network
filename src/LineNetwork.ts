@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import { type Link, Node } from "./types";
+import { type BaseLink, BaseNode } from "./core/types";
 
 // Create a material for the lines
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
 
 export class LineNetwork extends THREE.EventDispatcher {
-  init(nodes: Node[], links: Link[], parent: THREE.Object3D) {
+  init(nodes: BaseNode[], links: BaseLink[], parent: THREE.Object3D) {
     // Function to create a line between two points
     const createLine = (start: THREE.Vector3, end: THREE.Vector3) => {
       const geometry = new THREE.BufferGeometry().setFromPoints([start, end]);

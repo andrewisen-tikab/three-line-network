@@ -8,15 +8,27 @@ export type ID = number;
 /**
  * Node represents a node in the graph.
  */
-export type Node = {
+export type BaseNode = {
+  /**
+   * Unique identifier for the node.
+   */
   id: ID;
+  /**
+   * Position of the node in 3D space.
+   */
   position: THREE.Vector3;
 };
 
 /**
  * Link represents a link between two nodes in the graph.
  */
-export type Link = {
+export type BaseLink = {
+  /**
+   * Unique identifier for the start node.
+   */
   startNodeId: ID;
+  /**
+   * Unique identifier for the end node.
+   */
   endNodeId: ID;
 };
