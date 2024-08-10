@@ -123,6 +123,11 @@ export class LineNetwork
     distanceTraveled += this._speed * delta;
 
     let accumulatedDistance = 0;
+    let totalPathLength = this._links.reduce(
+      (sum, link) => sum + link.getLength(),
+      0
+    );
+
     for (let i = 0; i < this._links.length; i++) {
       const link = this._links[i];
       accumulatedDistance += link.getLength();
@@ -143,8 +148,22 @@ export class LineNetwork
           endNode.position,
           t
         );
+
+        if (t > 1) {
+          this._player.position.copy(endNode.position);
+          distanceTraveled = 0;
+        } else if (t < 0) {
+          this._player.position.copy(startNode.position);
+          distanceTraveled = 0;
+        }
+
         break;
       }
+    }
+
+    // Handle edge cases: Loop back or reverse direction at the ends
+    if (distanceTraveled >= totalPathLength) {
+    } else if (distanceTraveled <= 0) {
     }
   }
 }
