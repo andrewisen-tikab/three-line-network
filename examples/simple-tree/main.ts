@@ -20,11 +20,11 @@ const nodes: Node[] = [
 
 const links: Link[] = [
   // A - B
-  new Link(1, 2),
+  new Link(1, 1, 2),
   // B - C
-  new Link(2, 3),
+  new Link(2, 2, 3),
   // B - D
-  new Link(2, 4),
+  new Link(3, 2, 4),
 ];
 
 network.init(nodes, links, example.group);

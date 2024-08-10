@@ -31,6 +31,7 @@ export type BaseNode = {
  * Link represents a link between two nodes in the graph.
  */
 export type BaseLink = {
+  id: number;
   /**
    * Unique identifier for the start node.
    */

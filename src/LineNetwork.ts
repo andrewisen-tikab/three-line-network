@@ -7,6 +7,7 @@ import { Line2 } from "three/addons/lines/Line2.js";
 import { LineGeometry } from "three/addons/lines/LineGeometry.js";
 import { LineMaterial } from "three/addons/lines/LineMaterial.js";
 import { COLORS } from "./config";
+import { Switch } from "./Switch";
 
 // Create a material for the lines
 const lineMaterial = new LineMaterial({ color: COLORS.tertiary, linewidth: 5 });
@@ -40,10 +41,6 @@ const createPlayerVisualization = (position: THREE.Vector3): THREE.Mesh => {
   return capsule;
 };
 
-let currentLinkIndex = 0;
-let t = 0; // Interpolation factor (0 to 1)
-let distanceTraveled = 0; // Total distance traveled
-
 /**
  * Class representing a network of nodes and links.
  */
@@ -55,9 +52,21 @@ export class LineNetwork
 
   private _links: Link[] = [];
 
+  private _switches: Map<number, Switch> = new Map(); // Store switches by node ID
+
   private _player?: THREE.Mesh;
 
   private _speed = 0;
+
+  private _distanceTraveled: number = 0;
+
+  private _currentStartNode?: Node;
+
+  private _currentEndNode?: Node;
+
+  private _currentNextStartNode?: Node;
+
+  private _currentLink?: Link;
 
   init(nodes: Node[], links: Link[], parent: THREE.Object3D) {
     this._nodes = nodes;
@@ -82,18 +91,38 @@ export class LineNetwork
         parent.add(line);
         parent.add(node1);
         parent.add(node2);
+
+        // Add the link to both nodes' switches (if they exist)
+        this.addLinkToSwitch(startNode, link);
+        this.addLinkToSwitch(endNode, link);
       }
     });
 
     this._player = createPlayerVisualization(nodes[0].position);
     parent.add(this._player);
+
+    this.setCurrentLink(links[0], nodes[0]);
+  }
+
+  private addLinkToSwitch(node: Node, link: Link) {
+    if (!this._switches.has(node.id)) {
+      const defaultExitLink = link; // Assign the first link as the default exit link for simplicity
+      this._switches.set(node.id, new Switch(node, [link], defaultExitLink));
+    } else {
+      const switchInstance = this._switches.get(node.id)!;
+      switchInstance.links.push(link);
+    }
+  }
+
+  getSwitchForNode(nodeId: number): Switch | undefined {
+    return this._switches.get(nodeId);
   }
 
   generate(points: Point[], parent: THREE.Object3D) {
     const nodes = points.map((point, index) => new Node(index, point.position));
     const links = nodes
       .slice(0, -1)
-      .map((_node, index) => new Link(index, index + 1));
+      .map((_node, index) => new Link(index, index, index + 1));
 
     this.init(nodes, links, parent);
   }
@@ -116,54 +145,144 @@ export class LineNetwork
     this._speed = 0;
   }
 
+  // update(delta: number) {
+  //   if (this._player == null) return;
+  //   if (this._speed === 0) return;
+
+  //   distanceTraveled += this._speed * delta;
+
+  //   let accumulatedDistance = 0;
+  //   let totalPathLength = this._links.reduce(
+  //     (sum, link) => sum + link.getLength(),
+  //     0
+  //   );
+
+  //   for (let i = 0; i < this._links.length; i++) {
+  //     const link = this._links[i];
+  //     accumulatedDistance += link.getLength();
+
+  //     if (distanceTraveled <= accumulatedDistance) {
+  //       // Determine position along the current link
+  //       const startNode = this._nodes.find(
+  //         (node) => node.id === link.startNodeId
+  //       )!;
+  //       const endNode = this._nodes.find((node) => node.id === link.endNodeId)!;
+
+  //       this._currentStartNode = this._speed > 0 ? startNode : endNode;
+  //       this._currentEndNode = this._speed > 0 ? endNode : startNode;
+  //       this._currentLink = link;
+
+  //       const segmentDistance =
+  //         link.getLength() - (accumulatedDistance - distanceTraveled);
+  //       const t = segmentDistance / link.getLength();
+
+  //       this._player.position.lerpVectors(
+  //         startNode.position,
+  //         endNode.position,
+  //         t
+  //       );
+
+  //       if (t > 1) {
+  //         this._player.position.copy(endNode.position);
+  //         distanceTraveled = 0;
+  //       } else if (t < 0) {
+  //         this._player.position.copy(startNode.position);
+  //         distanceTraveled = 0;
+  //       }
+
+  //       break;
+  //     }
+  //   }
+
+  //   // Handle edge cases: Loop back or reverse direction at the ends
+  //   if (distanceTraveled >= totalPathLength) {
+  //   } else if (distanceTraveled <= 0) {
+  //   }
+  // }
+
+  getCurrentStartNode(): Node | undefined {
+    return this._currentStartNode;
+  }
+
+  getCurrentEndNode(): Node | undefined {
+    return this._currentEndNode;
+  }
+
+  getCurrentLink(): Link | undefined {
+    return this._currentLink;
+  }
+
+  getCurrentNextStartNode(): Node | undefined {
+    return this._currentNextStartNode;
+  }
+
   update(delta: number) {
-    if (this._player == null) return;
-    if (this._speed === 0) return;
+    if (this._player == null || this._currentLink == null || this._speed === 0)
+      return;
 
-    distanceTraveled += this._speed * delta;
+    this._distanceTraveled += this._speed * delta;
 
-    let accumulatedDistance = 0;
-    let totalPathLength = this._links.reduce(
-      (sum, link) => sum + link.getLength(),
-      0
-    );
-
-    for (let i = 0; i < this._links.length; i++) {
-      const link = this._links[i];
-      accumulatedDistance += link.getLength();
-
-      if (distanceTraveled <= accumulatedDistance) {
-        // Determine position along the current link
-        const startNode = this._nodes.find(
-          (node) => node.id === link.startNodeId
-        )!;
-        const endNode = this._nodes.find((node) => node.id === link.endNodeId)!;
-
-        const segmentDistance =
-          link.getLength() - (accumulatedDistance - distanceTraveled);
-        const t = segmentDistance / link.getLength();
-
-        this._player.position.lerpVectors(
-          startNode.position,
-          endNode.position,
-          t
-        );
-
-        if (t > 1) {
-          this._player.position.copy(endNode.position);
-          distanceTraveled = 0;
-        } else if (t < 0) {
-          this._player.position.copy(startNode.position);
-          distanceTraveled = 0;
-        }
-
-        break;
-      }
+    if (
+      this._distanceTraveled > this._currentLink.getLength() ||
+      this._distanceTraveled < 0
+    ) {
+      // Player reached the end or beginning of the current link
+      this.switchLink();
     }
 
-    // Handle edge cases: Loop back or reverse direction at the ends
-    if (distanceTraveled >= totalPathLength) {
-    } else if (distanceTraveled <= 0) {
+    // Determine position along the current link
+    const startNode = this._currentStartNode!;
+    const endNode = this._currentEndNode!;
+    const t = this._distanceTraveled / this._currentLink.getLength();
+
+    this._player.position.lerpVectors(startNode.position, endNode.position, t);
+  }
+
+  private switchLink() {
+    if (
+      this._speed > 0 &&
+      this._distanceTraveled >= this._currentLink!.getLength()
+    ) {
+      // Moving forward and reached the end of the current link
+      this._distanceTraveled -= this._currentLink!.getLength();
+      const switchInstance = this._switches.get(this._currentEndNode!.id);
+
+      if (switchInstance) {
+        const nextLink = switchInstance.getNextLink(this._currentLink!);
+        this.setCurrentLink(nextLink, this._currentEndNode!);
+      }
+    } else if (this._speed < 0 && this._distanceTraveled <= 0) {
+      // Moving backward and reached the start of the current link
+      this._distanceTraveled += this._currentLink!.getLength();
+      const switchInstance = this._switches.get(this._currentStartNode!.id);
+
+      if (switchInstance) {
+        const nextLink = switchInstance.getNextLink(this._currentLink!);
+        this.setCurrentLink(nextLink, this._currentStartNode!);
+      }
+    }
+  }
+
+  private setCurrentLink(link: Link, fromNode: Node) {
+    this._currentLink = link;
+    this._currentStartNode = fromNode;
+    this._currentEndNode = this._nodes.find(
+      (node) =>
+        node.id ===
+        (fromNode.id === link.startNodeId ? link.endNodeId : link.startNodeId)
+    )!;
+
+    const nextSwitch = this._switches.get(this._currentEndNode.id);
+    if (nextSwitch) {
+      const nextLink = nextSwitch.getNextLink(link);
+      const currentNextStartNode =
+        nextLink.startNodeId === this._currentEndNode.id
+          ? nextLink.endNodeId
+          : nextLink.startNodeId;
+
+      this._currentNextStartNode = this._nodes.find(
+        (node) => node.id === currentNextStartNode
+      );
     }
   }
 }

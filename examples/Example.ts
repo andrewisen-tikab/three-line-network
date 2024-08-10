@@ -38,6 +38,10 @@ export class Example {
      * Movement speed of the player from -100 to 100.
      */
     speed: 0,
+    linkID: -1,
+    startNode: -1,
+    endNode: -1,
+    nextStartNode: -1,
   };
 
   /**
@@ -96,6 +100,10 @@ export class Example {
         this.network.setSpeed(this.params.speed);
       });
 
+    this.gui.add(this.params, "startNode").disable().listen();
+    this.gui.add(this.params, "endNode").disable().listen();
+    this.gui.add(this.params, "nextStartNode").disable().listen();
+
     const render = (): void => {
       this.renderer.render(this.scene, camera);
     };
@@ -107,6 +115,13 @@ export class Example {
       camera.updateMatrixWorld();
 
       this.network.update(delta);
+
+      this.params.startNode = this.network.getCurrentStartNode()?.id ?? -1;
+      this.params.endNode = this.network.getCurrentEndNode()?.id ?? -1;
+
+      this.params.nextStartNode =
+        this.network.getCurrentNextStartNode()?.id ?? -1;
+      // this.params.linkID = this.network.getCurrentLink()?.id ?? -1;
 
       // Render
       requestAnimationFrame(animate);

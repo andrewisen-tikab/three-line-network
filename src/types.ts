@@ -3,6 +3,8 @@ import { type BaseLink, BaseNode, AbstractPoint } from "./core/types";
 
 export * from "./core/types";
 
+export type AbstractSwitch = {};
+
 export type AbstractLineNetwork = {
   /**
    * Initialize the network with nodes and links.
@@ -29,6 +31,23 @@ export type AbstractLineNetwork = {
    */
 
   getLinks(): Readonly<BaseLink[]>;
+
+  /**
+   * @returns The current start node.
+   */
+  getCurrentStartNode(): BaseNode | undefined;
+
+  /**
+   * @returns The current end node.
+   */
+  getCurrentEndNode(): BaseNode | undefined;
+
+  /**
+   * @returns The current link.
+   */
+  getCurrentLink(): BaseLink | undefined;
+
+  getCurrentNextStartNode(): BaseNode | undefined;
 
   /**
    * Update the network on each frame.
