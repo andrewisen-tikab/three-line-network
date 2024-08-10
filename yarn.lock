@@ -454,6 +454,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"camera-controls@npm:^2.8.5":
+  version: 2.8.5
+  resolution: "camera-controls@npm:2.8.5"
+  peerDependencies:
+    three: ">=0.126.1"
+  checksum: f0a0b2d5f3c9931490d6153f0b6ec87d2276b3eb866568741f04858c8b8df08cb2cbfc36828e8c900a203fe2d842d04947b1ed8528a26644fb1a4f5c253126ef
+  languageName: node
+  linkType: hard
+
 "chownr@npm:^2.0.0":
   version: 2.0.0
   resolution: "chownr@npm:2.0.0"
@@ -1300,6 +1309,7 @@ __metadata:
   resolution: "three-line-network@workspace:."
   dependencies:
     "@types/three": "npm:^0.167.1"
+    camera-controls: "npm:^2.8.5"
     three: "npm:^0.167.1"
     typescript: "npm:^5.5.3"
     vite: "npm:^5.4.0"
