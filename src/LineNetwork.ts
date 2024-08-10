@@ -42,6 +42,7 @@ const createPlayerVisualization = (position: THREE.Vector3): THREE.Mesh => {
 
 let currentLinkIndex = 0;
 let t = 0; // Interpolation factor (0 to 1)
+let distanceTraveled = 0; // Total distance traveled
 
 /**
  * Class representing a network of nodes and links.
@@ -68,6 +69,8 @@ export class LineNetwork
       const endNode = nodes.find((node) => node.id === link.endNodeId);
 
       if (startNode && endNode) {
+        link.setLength(startNode.position.distanceTo(endNode.position));
+
         const line = createLinkVisualization(
           startNode.position,
           endNode.position
@@ -113,28 +116,35 @@ export class LineNetwork
     this._speed = 0;
   }
 
-  update() {
+  update(delta: number) {
     if (this._player == null) return;
+    if (this._speed === 0) return;
 
-    const link = this._links[currentLinkIndex];
-    const startNode = this._nodes.find((node) => node.id === link.startNodeId)!;
-    const endNode = this._nodes.find((node) => node.id === link.endNodeId)!;
+    distanceTraveled += this._speed * delta;
 
-    // Interpolate the position between the start and end nodes
-    this._player.position.lerpVectors(startNode.position, endNode.position, t);
+    let accumulatedDistance = 0;
+    for (let i = 0; i < this._links.length; i++) {
+      const link = this._links[i];
+      accumulatedDistance += link.getLength();
 
-    // Update the interpolation factor
-    t += this._speed / 10_000;
+      if (distanceTraveled <= accumulatedDistance) {
+        // Determine position along the current link
+        const startNode = this._nodes.find(
+          (node) => node.id === link.startNodeId
+        )!;
+        const endNode = this._nodes.find((node) => node.id === link.endNodeId)!;
 
-    // If we've reached the end of the current link, move to the next link
-    if (t >= 1) {
-      t = 0;
-      currentLinkIndex = (currentLinkIndex + 1) % this._links.length;
-    }
-    if (t < 0) {
-      t = 1;
-      currentLinkIndex =
-        (currentLinkIndex - 1 + this._links.length) % this._links.length;
+        const segmentDistance =
+          link.getLength() - (accumulatedDistance - distanceTraveled);
+        const t = segmentDistance / link.getLength();
+
+        this._player.position.lerpVectors(
+          startNode.position,
+          endNode.position,
+          t
+        );
+        break;
+      }
     }
   }
 }

@@ -33,7 +33,7 @@ export type AbstractLineNetwork = {
   /**
    * Update the network on each frame.
    */
-  update(): void;
+  update(delta: number): void;
 
   /**
    * Dispose of the network.

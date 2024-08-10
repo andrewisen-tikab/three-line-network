@@ -39,4 +39,16 @@ export type BaseLink = {
    * Unique identifier for the end node.
    */
   endNodeId: ID;
+
+  /**
+   * Set the length of the link.
+   * @param length The length of the link.
+   */
+  setLength(length: number): void;
+
+  /**
+   * Get the length of the link.
+   * @returns The length of the link.
+   */
+  getLength(): number;
 };

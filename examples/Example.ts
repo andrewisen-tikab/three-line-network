@@ -106,7 +106,7 @@ export class Example {
       this.cameraControls.update(delta);
       camera.updateMatrixWorld();
 
-      this.network.update();
+      this.network.update(delta);
 
       // Render
       requestAnimationFrame(animate);
