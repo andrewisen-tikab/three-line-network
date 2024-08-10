@@ -40,6 +40,9 @@ const createPlayerVisualization = (position: THREE.Vector3): THREE.Mesh => {
   return capsule;
 };
 
+let currentLinkIndex = 0;
+let t = 0; // Interpolation factor (0 to 1)
+
 /**
  * Class representing a network of nodes and links.
  */
@@ -52,6 +55,8 @@ export class LineNetwork
   private _links: Link[] = [];
 
   private _player?: THREE.Mesh;
+
+  private _speed = 0;
 
   init(nodes: Node[], links: Link[], parent: THREE.Object3D) {
     this._nodes = nodes;
@@ -90,6 +95,10 @@ export class LineNetwork
     this.init(nodes, links, parent);
   }
 
+  setSpeed(speed: number): void {
+    this._speed = speed;
+  }
+
   getNodes(): Readonly<Node[]> {
     return this._nodes;
   }
@@ -101,9 +110,31 @@ export class LineNetwork
   dispose() {
     this._nodes = [];
     this._links = [];
+    this._speed = 0;
   }
 
   update() {
-    // Do nothing for now
+    if (this._player == null) return;
+
+    const link = this._links[currentLinkIndex];
+    const startNode = this._nodes.find((node) => node.id === link.startNodeId)!;
+    const endNode = this._nodes.find((node) => node.id === link.endNodeId)!;
+
+    // Interpolate the position between the start and end nodes
+    this._player.position.lerpVectors(startNode.position, endNode.position, t);
+
+    // Update the interpolation factor
+    t += this._speed / 10_000;
+
+    // If we've reached the end of the current link, move to the next link
+    if (t >= 1) {
+      t = 0;
+      currentLinkIndex = (currentLinkIndex + 1) % this._links.length;
+    }
+    if (t < 0) {
+      t = 1;
+      currentLinkIndex =
+        (currentLinkIndex - 1 + this._links.length) % this._links.length;
+    }
   }
 }

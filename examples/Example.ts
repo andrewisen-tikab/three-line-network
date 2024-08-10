@@ -33,7 +33,12 @@ export class Example {
   /**
    * The parameters for the GUI.
    */
-  public params = {};
+  public params = {
+    /**
+     * Movement speed of the player from -100 to 100.
+     */
+    speed: 0,
+  };
 
   /**
    * A camera control for three.js, similar to THREE.OrbitControls yet supports smooth transitions and more features.
@@ -83,6 +88,13 @@ export class Example {
     this.scene.add(axesHelper);
 
     this.network = new TLN.LineNetwork();
+
+    this.gui
+      .add(this.params, "speed", -100, 100)
+      .name("Speed")
+      .onChange(() => {
+        this.network.setSpeed(this.params.speed);
+      });
 
     const render = (): void => {
       this.renderer.render(this.scene, camera);

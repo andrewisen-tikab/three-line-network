@@ -39,4 +39,10 @@ export type AbstractLineNetwork = {
    * Dispose of the network.
    */
   dispose(): void;
+
+  /**
+   * Set the speed of the network.
+   * @param speed - Speed to set the network to. From -100 to 100.
+   */
+  setSpeed(speed: number): void;
 };
