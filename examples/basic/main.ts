@@ -9,7 +9,8 @@ const example = new Example();
 const nodes: Node[] = [
   { id: 1, position: new THREE.Vector3(0, 0, 0) },
   { id: 2, position: new THREE.Vector3(10, 0, 0) },
-  { id: 3, position: new THREE.Vector3(5, 10, 0) },
+  { id: 3, position: new THREE.Vector3(10, 0, 10) },
+  { id: 4, position: new THREE.Vector3(30, 0, 30) },
 ];
 
 const links: Link[] = [
@@ -20,3 +21,4 @@ const links: Link[] = [
 
 const network = new TLN.LineNetwork();
 network.init(nodes, links, example.group);
+example.group.position.set(0, 0.1, 0);
