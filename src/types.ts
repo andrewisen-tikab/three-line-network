@@ -3,7 +3,7 @@ import * as THREE from "three";
 /**
  * ID is a unique identifier for a a node or link.
  */
-export type ID = string;
+export type ID = number;
 
 /**
  * Node represents a node in the graph.
