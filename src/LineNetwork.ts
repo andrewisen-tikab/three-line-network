@@ -288,6 +288,8 @@ export class LineNetwork
   }
 
   private updateLinksVisualization() {
+    const linesVizGeometry = new LineGeometry();
+
     const points: THREE.Vector3[] = [];
     // points.push(new THREE.Vector3(0, 0, 0));
     // points.push(new THREE.Vector3(-10, 0, 0));
@@ -325,6 +327,9 @@ export class LineNetwork
     linesVizGeometry.setPositions(
       points.map((point) => [point.x, point.y, point.z]).flat()
     );
+    const oldGeometry = linesViz.geometry as LineGeometry;
+    linesViz.geometry = linesVizGeometry;
+    oldGeometry.dispose();
 
     linesViz.computeLineDistances();
   }
