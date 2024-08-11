@@ -120,6 +120,7 @@ export class Example {
     this.scene.add(axesHelper);
 
     this.network = new TLN.LineNetwork();
+    this.group.add(this.network.debugScene);
 
     this.gui
       .add(this.params, "speed", -100, 100)
@@ -134,6 +135,8 @@ export class Example {
 
     const render = (): void => {
       this.renderer.render(this.scene, camera);
+      this.css2DRenderer.render(this.scene, camera);
+      this.css3DRenderer.render(this.scene, camera);
     };
 
     const animate = (_currentTime: number = 0): void => {

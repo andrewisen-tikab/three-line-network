@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 
 import { Link } from "./core/Link";
 import { Node } from "./core/Node";
@@ -27,5 +28,17 @@ export class Switch implements AbstractSwitch {
     }
 
     return this.defaultExitLink;
+  }
+
+  generateLabel() {
+    const div = document.createElement("div");
+    div.className = "label";
+    div.textContent = this.currentNode.id.toString();
+    // earthDiv.style.backgroundColor = "transparent";
+
+    const css2DObject = new CSS2DObject(div);
+    css2DObject.position.copy(this.currentNode.position);
+    css2DObject.position.y += 1;
+    return css2DObject;
   }
 }

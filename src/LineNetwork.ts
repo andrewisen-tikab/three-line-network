@@ -68,7 +68,10 @@ export class LineNetwork
 
   private _currentLink?: Link;
 
+  debugScene: THREE.Scene = new THREE.Scene();
+
   init(nodes: Node[], links: Link[], parent: THREE.Object3D) {
+    this.debugScene.clear();
     this._nodes = nodes;
     this._links = links;
 
@@ -107,7 +110,9 @@ export class LineNetwork
   private addLinkToSwitch(node: Node, link: Link) {
     if (!this._switches.has(node.id)) {
       const defaultExitLink = link; // Assign the first link as the default exit link for simplicity
-      this._switches.set(node.id, new Switch(node, [link], defaultExitLink));
+      const networkSwitch = new Switch(node, [link], defaultExitLink);
+      this.debugScene?.add(networkSwitch.generateLabel());
+      this._switches.set(node.id, networkSwitch);
     } else {
       const switchInstance = this._switches.get(node.id)!;
       switchInstance.links.push(link);
