@@ -9,6 +9,19 @@ import { LineMaterial } from "three/addons/lines/LineMaterial.js";
 import { COLORS } from "./config";
 import { Switch } from "./Switch";
 
+const linesVizGeometry = new LineGeometry();
+linesVizGeometry.setPositions([0, 0, 0, 0, 0, 0]);
+
+const linesVizMaterial = new LineMaterial({
+  color: 0xff0000,
+  linewidth: 5, // Adjust based on your requirements
+  dashSize: 1, // Length of each dash
+  gapSize: 0.5, // Length of the gap between dashes
+  dashed: true,
+});
+
+const linesViz = new Line2(linesVizGeometry, linesVizMaterial);
+
 // Create a material for the lines
 const lineMaterial = new LineMaterial({ color: COLORS.tertiary, linewidth: 5 });
 
@@ -72,6 +85,10 @@ export class LineNetwork
 
   init(nodes: Node[], links: Link[], parent: THREE.Object3D) {
     this.debugScene.clear();
+    this.debugScene.add(linesViz);
+    linesViz.computeLineDistances();
+    linesViz.position.y = 0.5;
+
     this._nodes = nodes;
     this._links = links;
 
@@ -222,6 +239,8 @@ export class LineNetwork
   }
 
   update(delta: number) {
+    linesVizMaterial.dashOffset -= 0.05; // Change this value to control the speed
+
     if (this._player == null || this._currentLink == null || this._speed === 0)
       return;
 
@@ -268,6 +287,52 @@ export class LineNetwork
     }
   }
 
+  private updateLinksVisualization() {
+    const points: THREE.Vector3[] = [];
+    // points.push(new THREE.Vector3(0, 0, 0));
+    // points.push(new THREE.Vector3(-10, 0, 0));
+
+    let startNode = this._currentStartNode!;
+    let endNode = this._currentEndNode!;
+    let index = 0;
+
+    points.push(startNode.position);
+
+    while (true) {
+      index++;
+      if (index > 4) break;
+
+      points.push(endNode.position);
+
+      const switchInstance = this._switches.get(endNode.id);
+
+      if (switchInstance) {
+        const nextLink = switchInstance.getNextLink(this._currentLink!);
+
+        const newStartNode = this._nodes.find(
+          (node) => node.id === nextLink.startNodeId
+        )!;
+        const newEndNode = this._nodes.find(
+          (node) => node.id === nextLink.endNodeId
+        )!;
+
+        // Going in reverse
+        if (newEndNode.id === endNode.id) break;
+
+        startNode = newStartNode;
+        endNode = newEndNode;
+      } else {
+        break;
+      }
+    }
+
+    linesVizGeometry.setPositions(
+      points.map((point) => [point.x, point.y, point.z]).flat()
+    );
+
+    linesViz.computeLineDistances();
+  }
+
   private setCurrentLink(link: Link, fromNode: Node) {
     this._currentLink = link;
     this._currentStartNode = fromNode;
@@ -289,5 +354,7 @@ export class LineNetwork
         (node) => node.id === currentNextStartNode
       );
     }
+
+    this.updateLinksVisualization();
   }
 }
