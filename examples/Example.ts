@@ -5,8 +5,31 @@ import * as TLN from "../src";
 import { CSS3DRenderer } from "three/addons/renderers/CSS3DRenderer.js";
 import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js";
 
+import { Line2 } from "three/addons/lines/Line2.js";
+import { LineGeometry } from "three/addons/lines/LineGeometry.js";
+import { LineMaterial } from "three/addons/lines/LineMaterial.js";
+
 CameraControls.install({ THREE });
 import Stats from "three/addons/libs/stats.module.js";
+
+const points: THREE.Vector3[] = [];
+points.push(new THREE.Vector3(0, 0, 0));
+points.push(new THREE.Vector3(-10, 0, 0));
+
+const geometry = new LineGeometry();
+geometry.setPositions(
+  points.map((point) => [point.x, point.y, point.z]).flat()
+);
+
+const material = new LineMaterial({
+  color: 0xff0000,
+  linewidth: 5, // Adjust based on your requirements
+  dashSize: 1, // Length of each dash
+  gapSize: 0.5, // Length of the gap between dashes
+  dashed: true,
+});
+
+const line = new Line2(geometry, material);
 
 /**
  * Example class that demonstrates how to use the library.
@@ -133,6 +156,10 @@ export class Example {
     this.gui.add(this.params, "endNode").disable().listen();
     this.gui.add(this.params, "nextStartNode").disable().listen();
 
+    line.computeLineDistances(); // Required for dashed lines to work
+
+    this.scene.add(line);
+
     const render = (): void => {
       this.renderer.render(this.scene, camera);
       this.css2DRenderer.render(this.scene, camera);
@@ -153,6 +180,8 @@ export class Example {
       this.params.nextStartNode =
         this.network.getCurrentNextStartNode()?.id ?? -1;
       // this.params.linkID = this.network.getCurrentLink()?.id ?? -1;
+
+      material.dashOffset -= 0.05; // Change this value to control the speed
 
       // Render
       requestAnimationFrame(animate);
