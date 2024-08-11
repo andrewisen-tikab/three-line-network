@@ -294,14 +294,10 @@ export class LineNetwork
 
     let startNode = this._currentStartNode!;
     let endNode = this._currentEndNode!;
-    let index = 0;
 
     points.push(startNode.position);
 
     while (true) {
-      index++;
-      if (index > 4) break;
-
       points.push(endNode.position);
 
       const switchInstance = this._switches.get(endNode.id);
