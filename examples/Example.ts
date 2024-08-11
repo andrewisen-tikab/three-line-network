@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import CameraControls from "camera-controls";
 import * as TLN from "../src";
+import { CSS3DRenderer } from "three/addons/renderers/CSS3DRenderer.js";
+import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js";
 
 CameraControls.install({ THREE });
 import Stats from "three/addons/libs/stats.module.js";
@@ -29,6 +31,18 @@ export class Example {
    * The WebGL renderer displays your beautifully crafted scenes using WebGL.
    */
   public renderer: THREE.WebGLRenderer;
+
+  /**
+   * CSS2DRenderer is a simplified version of CSS3DRenderer. The only transformation that is supported is translation.
+   */
+  public css2DRenderer: CSS2DRenderer;
+
+  /**
+   * CSS3DRenderer can be used to apply hierarchical 3D transformations to DOM elements via the CSS3 transform property.
+   * This renderer is particularly interesting if you want to apply 3D effects to a website without canvas based rendering.
+   * It can also be used in order to combine DOM elements with WebGL content.
+   */
+  public css3DRenderer: CSS3DRenderer;
 
   /**
    * The parameters for the GUI.
@@ -71,6 +85,20 @@ export class Example {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
+
+    this.css2DRenderer = new CSS2DRenderer();
+    this.css2DRenderer.setSize(window.innerWidth, window.innerHeight);
+    this.css2DRenderer.domElement.style.position = "absolute";
+    this.css2DRenderer.domElement.style.top = "0px";
+    this.css2DRenderer.domElement.className = "css-2d-renderer";
+    document.body.appendChild(this.css2DRenderer.domElement);
+
+    this.css3DRenderer = new CSS3DRenderer();
+    this.css3DRenderer.setSize(window.innerWidth, window.innerHeight);
+    this.css3DRenderer.domElement.style.position = "absolute";
+    this.css3DRenderer.domElement.style.top = "0px";
+    this.css3DRenderer.domElement.className = "css-3d-renderer";
+    document.body.appendChild(this.css3DRenderer.domElement);
 
     const clock = new THREE.Clock();
     const camera = new THREE.PerspectiveCamera(

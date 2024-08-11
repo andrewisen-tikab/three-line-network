@@ -1,3 +1,11 @@
 body {
   margin: 0;
 }
+
+.css-2d-renderer {
+  pointer-events: none;
+}
+
+.css-3d-renderer {
+  pointer-events: none;
+}
