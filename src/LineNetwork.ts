@@ -273,6 +273,7 @@ export class LineNetwork
 
       if (switchInstance) {
         const nextLink = switchInstance.getNextLink(this._currentLink!);
+        if (nextLink == null) return;
         this.setCurrentLink(nextLink, this._currentEndNode!);
       }
     } else if (this._speed < 0 && this._distanceTraveled <= 0) {
@@ -282,12 +283,15 @@ export class LineNetwork
 
       if (switchInstance) {
         const nextLink = switchInstance.getNextLink(this._currentLink!);
+        if (nextLink == null) return;
+
         this.setCurrentLink(nextLink, this._currentStartNode!);
       }
     }
   }
 
   private updateLinksVisualization() {
+    let visitedNodes = new Set<number>();
     const linesVizGeometry = new LineGeometry();
 
     const points: THREE.Vector3[] = [];
@@ -299,13 +303,18 @@ export class LineNetwork
 
     points.push(startNode.position);
 
+    let link = this._currentLink!;
+
     while (true) {
       points.push(endNode.position);
 
       const switchInstance = this._switches.get(endNode.id);
 
       if (switchInstance) {
-        const nextLink = switchInstance.getNextLink(this._currentLink!);
+        // console.log("link", link.id);
+
+        const nextLink = switchInstance.getNextLink(link);
+        if (nextLink == null) break;
 
         const newStartNode = this._nodes.find(
           (node) => node.id === nextLink.startNodeId
@@ -314,11 +323,34 @@ export class LineNetwork
           (node) => node.id === nextLink.endNodeId
         )!;
 
-        // Going in reverse
-        if (newEndNode.id === endNode.id) break;
+        // console.log("newStartNode", newStartNode.id);
 
-        startNode = newStartNode;
-        endNode = newEndNode;
+        console.log("newEndNode", newEndNode.id);
+        // console.log("end",endNode.id);
+
+        // // Going in reverse
+        // if (newEndNode.id === endNode.id) {
+        //   break;
+        // }
+
+        visitedNodes.add(startNode.id);
+        visitedNodes.add(endNode.id);
+
+        if (newEndNode.id === endNode.id) {
+          startNode = newEndNode;
+          endNode = newStartNode;
+        } else {
+          startNode = newStartNode;
+          endNode = newEndNode;
+        }
+
+        link = nextLink;
+
+        // console.log("Going to", endNode.id);
+
+        if (visitedNodes.has(startNode.id) && visitedNodes.has(endNode.id)) {
+          break;
+        }
       } else {
         break;
       }
@@ -346,6 +378,10 @@ export class LineNetwork
     const nextSwitch = this._switches.get(this._currentEndNode.id);
     if (nextSwitch) {
       const nextLink = nextSwitch.getNextLink(link);
+      if (nextLink == null) {
+        throw new Error("Next link is null");
+      }
+
       const currentNextStartNode =
         nextLink.startNodeId === this._currentEndNode.id
           ? nextLink.endNodeId
