@@ -15,18 +15,26 @@ export class Switch implements AbstractSwitch {
     this.defaultExitLink = defaultExitLink;
   }
 
-  getNextLink(currentLink: Link): Link {
-    const nextLink = this.links.find((link) => link !== currentLink);
+  /**
+   * Get the next link in the switch, if it exists.
+   * If it's null then the switch is a dead end.
+   * @param currentLink
+   */
+  getNextLink(currentLink: Link): Link | null {
+    const nextLinks = this.links.filter((link) => link !== currentLink);
+    let nextLink = nextLinks[0];
 
     if (nextLink) {
-      let nextLinkIndex = this.links.indexOf(nextLink!) + 1;
+      let nextLinkIndex = this.links.indexOf(nextLink!);
+
+      if (nextLinks.length > 1) nextLinkIndex++;
       if (nextLinkIndex >= this.links.length) {
         nextLinkIndex = 0;
       }
       return this.links[nextLinkIndex];
     }
 
-    return this.defaultExitLink;
+    return null;
   }
 
   generateLabel() {
