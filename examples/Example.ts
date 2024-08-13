@@ -67,6 +67,10 @@ export class Example {
 
   public network: TLN.LineNetwork;
 
+  public raycaster: THREE.Raycaster;
+
+  public pointer: THREE.Vector2;
+
   constructor() {
     const stats = new Stats();
     document.body.appendChild(stats.dom);
@@ -101,6 +105,9 @@ export class Example {
     this.css3DRenderer.domElement.style.top = "0px";
     this.css3DRenderer.domElement.className = "css-3d-renderer";
     document.body.appendChild(this.css3DRenderer.domElement);
+
+    this.raycaster = new THREE.Raycaster();
+    this.pointer = new THREE.Vector2();
 
     const clock = new THREE.Clock();
     const camera = new THREE.PerspectiveCamera(
@@ -149,6 +156,15 @@ export class Example {
 
     setParams();
 
+    const onPointerMove = (event: PointerEvent) => {
+      this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+      this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    };
+
+    const raycast = () => {
+      this.raycaster.setFromCamera(this.pointer, camera);
+    };
+
     const render = (): void => {
       this.renderer.render(this.scene, camera);
       this.css2DRenderer.render(this.scene, camera);
@@ -170,6 +186,9 @@ export class Example {
         this.network.getCurrentNextStartNode()?.id ?? -1;
       // this.params.linkID = this.network.getCurrentLink()?.id ?? -1;
 
+      // Raycast
+      raycast();
+
       // Render
       requestAnimationFrame(animate);
       stats.update();
@@ -178,5 +197,7 @@ export class Example {
 
     // Everything is setup, lets go!
     animate();
+
+    window.addEventListener("pointermove", onPointerMove);
   }
 }
