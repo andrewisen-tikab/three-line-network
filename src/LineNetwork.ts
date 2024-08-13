@@ -335,11 +335,6 @@ export class LineNetwork
           (node) => node.id === nextLink.endNodeId
         )!;
 
-        // console.log("newStartNode", newStartNode.id);
-
-        console.log("newEndNode", newEndNode.id);
-        // console.log("end",endNode.id);
-
         // // Going in reverse
         // if (newEndNode.id === endNode.id) {
         //   break;
@@ -357,8 +352,6 @@ export class LineNetwork
         }
 
         link = nextLink;
-
-        // console.log("Going to", endNode.id);
 
         if (visitedNodes.has(startNode.id) && visitedNodes.has(endNode.id)) {
           break;

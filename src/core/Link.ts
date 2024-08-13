@@ -23,8 +23,6 @@ export class Link implements BaseLink {
   }
 
   generateLabel(startPosition: THREE.Vector3, endPosition: THREE.Vector3) {
-    console.log("Generating label for link", this.id);
-
     const div = document.createElement("div");
     div.className = "link-label";
     div.textContent = this.id.toString();
