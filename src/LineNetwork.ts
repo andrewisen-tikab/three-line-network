@@ -8,6 +8,7 @@ import { LineGeometry } from "three/addons/lines/LineGeometry.js";
 import { LineMaterial } from "three/addons/lines/LineMaterial.js";
 import { COLORS } from "./config";
 import { Switch } from "./Switch";
+import { AStarPathfinder } from "./path-finding/a-star";
 
 const linesVizGeometry = new LineGeometry();
 linesVizGeometry.setPositions([0, 0, 0, 0, 0, 0]);
@@ -80,6 +81,8 @@ export class LineNetwork
   private _currentNextStartNode?: Node;
 
   private _currentLink?: Link;
+
+  private pathFinder = new AStarPathfinder();
 
   debugScene: THREE.Scene = new THREE.Scene();
 
@@ -400,5 +403,33 @@ export class LineNetwork
     }
 
     this.updateLinksVisualization();
+  }
+
+  private _findPath(startNode: Node, endNode: Node) {
+    const path = this.pathFinder.findPath(
+      startNode,
+      endNode,
+      this._nodes,
+      this._links
+    );
+    return path;
+  }
+
+  findPath(startNodeId: number, endNodeId: number): Node[] {
+    const startNode = this._nodes.find((node) => node.id === startNodeId);
+    const endNode = this._nodes.find((node) => node.id === endNodeId);
+    if (startNode == null) throw new Error(`${startNodeId} not found`);
+    if (endNode == null) throw new Error(`${endNodeId} not found`);
+
+    const path = this._findPath(startNode, endNode);
+
+    return path;
+  }
+
+  findPathFromCurrentNode(endNodeId: number): Node[] {
+    if (this._currentStartNode == null) {
+      throw new Error("Current start node is null");
+    }
+    return this.findPath(this._currentStartNode.id, endNodeId);
   }
 }

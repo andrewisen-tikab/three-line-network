@@ -58,6 +58,7 @@ export class Example {
     nextStartNode: -1,
     showNodeLabels: true,
     showLinkLabels: true,
+    pathFindingNodeID: -1,
   };
 
   /**
@@ -153,6 +154,18 @@ export class Example {
 
     visualizationFolder.add(this.params, "showNodeLabels").onChange(setParams);
     visualizationFolder.add(this.params, "showLinkLabels").onChange(setParams);
+
+    const pathFindingFOlder = this.gui.addFolder("Path Finding");
+    pathFindingFOlder
+      .add(this.params, "pathFindingNodeID")
+      .name("Node ID")
+      .onChange(() => {
+        const path = this.network.findPathFromCurrentNode(
+          this.params.pathFindingNodeID
+        );
+
+        console.log(path);
+      });
 
     setParams();
 

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { type BaseLink, BaseNode, AbstractPoint } from "./core/types";
 
 export * from "./core/types";
+export * from "./path-finding/types";
 
 export type AbstractSwitch = {};
 
