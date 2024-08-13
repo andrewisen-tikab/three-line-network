@@ -56,6 +56,8 @@ export class Example {
     startNode: -1,
     endNode: -1,
     nextStartNode: -1,
+    showNodeLabels: true,
+    showLinkLabels: true,
   };
 
   /**
@@ -122,16 +124,30 @@ export class Example {
     this.network = new TLN.LineNetwork();
     this.group.add(this.network.debugScene);
 
-    this.gui
+    const movementFolder = this.gui.addFolder("Movement");
+
+    movementFolder
       .add(this.params, "speed", -100, 100)
       .name("Speed")
       .onChange(() => {
         this.network.setSpeed(this.params.speed);
       });
 
-    this.gui.add(this.params, "startNode").disable().listen();
-    this.gui.add(this.params, "endNode").disable().listen();
-    this.gui.add(this.params, "nextStartNode").disable().listen();
+    movementFolder.add(this.params, "startNode").disable().listen();
+    movementFolder.add(this.params, "endNode").disable().listen();
+    movementFolder.add(this.params, "nextStartNode").disable().listen();
+
+    const visualizationFolder = this.gui.addFolder("Visualization");
+
+    const setParams = () => {
+      this.network.nodeLabelGroup.visible = this.params.showNodeLabels;
+      this.network.linkLabelGroup.visible = this.params.showLinkLabels;
+    };
+
+    visualizationFolder.add(this.params, "showNodeLabels").onChange(setParams);
+    visualizationFolder.add(this.params, "showLinkLabels").onChange(setParams);
+
+    setParams();
 
     const render = (): void => {
       this.renderer.render(this.scene, camera);

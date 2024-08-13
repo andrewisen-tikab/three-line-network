@@ -83,9 +83,17 @@ export class LineNetwork
 
   debugScene: THREE.Scene = new THREE.Scene();
 
+  nodeLabelGroup: THREE.Group = new THREE.Group();
+
+  linkLabelGroup: THREE.Group = new THREE.Group();
+
   init(nodes: Node[], links: Link[], parent: THREE.Object3D) {
     this.debugScene.clear();
     this.debugScene.add(linesViz);
+
+    this.debugScene.add(this.nodeLabelGroup);
+    this.debugScene.add(this.linkLabelGroup);
+
     linesViz.computeLineDistances();
     linesViz.position.y = 0.5;
 
@@ -108,6 +116,10 @@ export class LineNetwork
         const node1 = createNodeVisualization(startNode.position);
         const node2 = createNodeVisualization(endNode.position);
 
+        this.linkLabelGroup.add(
+          link.generateLabel(startNode.position, endNode.position)
+        );
+
         parent.add(line);
         parent.add(node1);
         parent.add(node2);
@@ -128,7 +140,7 @@ export class LineNetwork
     if (!this._switches.has(node.id)) {
       const defaultExitLink = link; // Assign the first link as the default exit link for simplicity
       const networkSwitch = new Switch(node, [link], defaultExitLink);
-      this.debugScene?.add(networkSwitch.generateLabel());
+      this.nodeLabelGroup?.add(networkSwitch.generateLabel());
       this._switches.set(node.id, networkSwitch);
     } else {
       const switchInstance = this._switches.get(node.id)!;

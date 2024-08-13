@@ -39,7 +39,7 @@ export class Switch implements AbstractSwitch {
 
   generateLabel() {
     const div = document.createElement("div");
-    div.className = "label";
+    div.className = "node-label";
     div.textContent = this.currentNode.id.toString();
     // earthDiv.style.backgroundColor = "transparent";
 

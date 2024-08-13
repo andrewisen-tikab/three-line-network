@@ -10,9 +10,16 @@ body {
   pointer-events: none;
 }
 
-.label {
+.node-label {
   color: #fff;
   font-family: sans-serif;
   padding: 2px;
   background: rgba(0, 0, 0, 0.6);
+}
+
+.link-label {
+  color: #000;
+  font-family: sans-serif;
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.6);
 }
