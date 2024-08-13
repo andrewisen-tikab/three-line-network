@@ -87,6 +87,8 @@ export class LineNetwork
 
   linkLabelGroup: THREE.Group = new THREE.Group();
 
+  linkGroup: THREE.Group = new THREE.Group();
+
   init(nodes: Node[], links: Link[], parent: THREE.Object3D) {
     this.debugScene.clear();
     this.debugScene.add(linesViz);
