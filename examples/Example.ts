@@ -164,7 +164,7 @@ export class Example {
           this.params.pathFindingNodeID
         );
 
-        console.log(path);
+        this.network.visualizePathFindingPath(path);
       });
 
     setParams();

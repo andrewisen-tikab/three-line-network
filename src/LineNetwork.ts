@@ -23,6 +23,19 @@ const linesVizMaterial = new LineMaterial({
 
 const linesViz = new Line2(linesVizGeometry, linesVizMaterial);
 
+const pathFindingGeometry = new LineGeometry();
+pathFindingGeometry.setPositions([0, 0, 0, 0, 0, 0]);
+
+const pathFindingMaterial = new LineMaterial({
+  color: 0x00ff00,
+  linewidth: 5, // Adjust based on your requirements
+  dashSize: 1, // Length of each dash
+  gapSize: 0.5, // Length of the gap between dashes
+  dashed: true,
+});
+
+const pathFindingLine = new Line2(pathFindingGeometry, pathFindingMaterial);
+
 // Create a material for the lines
 const lineMaterial = new LineMaterial({ color: COLORS.tertiary, linewidth: 5 });
 
@@ -95,12 +108,16 @@ export class LineNetwork
   init(nodes: Node[], links: Link[], parent: THREE.Object3D) {
     this.debugScene.clear();
     this.debugScene.add(linesViz);
+    this.debugScene.add(pathFindingLine);
 
     this.debugScene.add(this.nodeLabelGroup);
     this.debugScene.add(this.linkLabelGroup);
 
     linesViz.computeLineDistances();
     linesViz.position.y = 0.5;
+
+    pathFindingLine.computeLineDistances();
+    pathFindingLine.position.y = 0.5;
 
     this._nodes = nodes;
     this._links = links;
@@ -256,7 +273,8 @@ export class LineNetwork
   }
 
   update(delta: number) {
-    linesVizMaterial.dashOffset -= 0.05; // Change this value to control the speed
+    linesVizMaterial.dashOffset -= 0.01; // Change this value to control the speed
+    pathFindingMaterial.dashOffset -= 0.05; // Change this value to control the speed
 
     if (this._player == null || this._currentLink == null || this._speed === 0)
       return;
@@ -431,5 +449,18 @@ export class LineNetwork
       throw new Error("Current start node is null");
     }
     return this.findPath(this._currentStartNode.id, endNodeId);
+  }
+
+  visualizePathFindingPath(path: Node[]) {
+    const points = path.map((node) => node.position);
+    pathFindingGeometry.setPositions(
+      points.map((point) => [point.x, point.y, point.z]).flat()
+    );
+
+    const oldGeometry = pathFindingLine.geometry as LineGeometry;
+    pathFindingLine.geometry = pathFindingGeometry;
+    oldGeometry.dispose();
+
+    pathFindingLine.computeLineDistances();
   }
 }
