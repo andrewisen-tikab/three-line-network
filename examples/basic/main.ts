@@ -15,7 +15,7 @@ const nodes: Node[] = [
   new Node(4, new THREE.Vector3(30, 0, 30)),
 ];
 
-const links: Link[] = [new Link(1, 2), new Link(2, 3), new Link(3, 4)];
+const links: Link[] = [new Link(1, 1, 2), new Link(2, 2, 3), new Link(3, 3, 4)];
 
 network.init(nodes, links, example.group);
 example.group.position.set(0, 0.1, 0);
