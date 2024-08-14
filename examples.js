@@ -1,1 +1,1 @@
-export const EXAMPLES = ["basic", "generate", "simple-tree"];
+export const EXAMPLES = ["basic", "generate", "simple-tree", "tree"];
