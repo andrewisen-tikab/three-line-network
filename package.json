@@ -1,0 +1,24 @@
+{
+  "name": "three-line-network",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && vite build -c vite.config.example.ts",
+    "preview": "vite preview",
+    "docs": "typedoc"
+  },
+  "devDependencies": {
+    "@types/three": "^0.167.1",
+    "typedoc": "^0.26.5",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.2"
+  },
+  "dependencies": {
+    "camera-controls": "^2.8.5",
+    "three": "^0.167.1"
+  }
+}
