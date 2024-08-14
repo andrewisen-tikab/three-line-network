@@ -5,10 +5,7 @@ import { EXAMPLES } from "./examples";
 const input: { [key: string]: resolve } = {};
 
 EXAMPLES.forEach((example) => {
-  input[example] = resolve(
-    __dirname,
-    `examples/examples/${example}/index.html`
-  );
+  input[example] = resolve(__dirname, `examples/${example}/index.html`);
 });
 
 export default defineConfig({
