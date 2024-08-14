@@ -1,6 +1,5 @@
 import { Example } from "../Example";
 import "../styles.css";
-import * as TLN from "../../src";
 import { Point } from "../../src/core/Point";
 
 import * as THREE from "three";
