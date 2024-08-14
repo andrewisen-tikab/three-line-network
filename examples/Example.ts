@@ -56,6 +56,7 @@ export class Example {
     startNode: -1,
     endNode: -1,
     nextStartNode: -1,
+    showVisualization: true,
     showNodeLabels: true,
     showLinkLabels: true,
     pathFindingNodeID: -1,
@@ -152,6 +153,10 @@ export class Example {
       this.network.linkLabelGroup.visible = this.params.showLinkLabels;
     };
 
+    visualizationFolder
+      .add(this.params, "showVisualization")
+      .name("Show Visualization")
+      .onChange(setParams);
     visualizationFolder.add(this.params, "showNodeLabels").onChange(setParams);
     visualizationFolder.add(this.params, "showLinkLabels").onChange(setParams);
 
