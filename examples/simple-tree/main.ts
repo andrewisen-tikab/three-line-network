@@ -33,8 +33,6 @@ const links: Link[] = [
   new Link(4, 5, 6),
   // D - F
   new Link(5, 3, 4),
-  // Connect
-  new Link(6, 4, 6),
 ];
 
 network.init(nodes, links, example.group);
