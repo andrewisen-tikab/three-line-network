@@ -2,7 +2,7 @@
   "name": "three-line-network",
   "version": "0.0.2",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/three-line-network.js",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
