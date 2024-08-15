@@ -5,6 +5,7 @@ import { EXAMPLES } from "./examples";
 const input: { [key: string]: resolve } = {};
 
 EXAMPLES.forEach((example) => {
+  input["examples"] = resolve(__dirname, `examples/index.html`);
   input[example] = resolve(__dirname, `examples/${example}/index.html`);
 });
 
