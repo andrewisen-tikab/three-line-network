@@ -3,6 +3,7 @@
   "version": "0.0.2",
   "type": "module",
   "main": "src/index.ts",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && vite build -c vite.config.example.ts",
