@@ -10,7 +10,7 @@ export default defineConfig({
       entry: resolve(__dirname, "src/index.ts"),
       name: "ThreeMultiSelect",
       // the proper extensions will be added
-      fileName: "three-multi-select",
+      fileName: "three-line-network",
       formats: ["es"],
     },
     rollupOptions: {

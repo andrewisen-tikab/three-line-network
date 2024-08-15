@@ -1,9 +1,9 @@
 {
   "name": "three-line-network",
-  "private": true,
   "version": "0.0.3",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/three-line-network.js",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && vite build -c vite.config.example.ts",
