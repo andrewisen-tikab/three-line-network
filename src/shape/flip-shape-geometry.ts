@@ -3,6 +3,10 @@ import * as THREE from "three";
 /**
  * Flips the geometry of a shape.
  *
+ * Inspired by:
+ * - https://discourse.threejs.org/t/offsetcontour-function/3185
+ * - https://discourse.threejs.org/t/profiledcontourgeometry/2330
+ *
  * @param shapeGeometry - The {@link THREE.ShapeGeometry | shape geometry} to flip.
  * @returns The {@link THREE.ShapeGeometry | flipped geometry}.
  * @throws {Error} If the {@link THREE.ShapeGeometry | shape geometry} does not have an index attribute.
