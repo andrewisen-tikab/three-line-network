@@ -1,1 +1,8 @@
-export const EXAMPLES = ["basic", "generate", "simple-tree", "tree", "shape"];
+export const EXAMPLES = [
+  "basic",
+  "generate",
+  "simple-tree",
+  "tree",
+  "shape",
+  "train",
+];

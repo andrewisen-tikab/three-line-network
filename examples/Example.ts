@@ -62,6 +62,8 @@ export class Example {
     pathFindingNodeID: -1,
   };
 
+  public camera: THREE.PerspectiveCamera;
+
   /**
    * A camera control for three.js, similar to THREE.OrbitControls yet supports smooth transitions and more features.
    */
@@ -112,13 +114,16 @@ export class Example {
     this.pointer = new THREE.Vector2();
 
     const clock = new THREE.Clock();
-    const camera = new THREE.PerspectiveCamera(
+    this.camera = new THREE.PerspectiveCamera(
       70,
       window.innerWidth / window.innerHeight,
       0.1,
       5000
     );
-    this.cameraControls = new CameraControls(camera, this.renderer.domElement);
+    this.cameraControls = new CameraControls(
+      this.camera,
+      this.renderer.domElement
+    );
     this.cameraControls.setPosition(10, 10, 10, true);
 
     const size = 10;
@@ -180,20 +185,20 @@ export class Example {
     };
 
     const raycast = () => {
-      this.raycaster.setFromCamera(this.pointer, camera);
+      this.raycaster.setFromCamera(this.pointer, this.camera);
     };
 
     const render = (): void => {
-      this.renderer.render(this.scene, camera);
-      this.css2DRenderer.render(this.scene, camera);
-      this.css3DRenderer.render(this.scene, camera);
+      this.renderer.render(this.scene, this.camera);
+      this.css2DRenderer.render(this.scene, this.camera);
+      this.css3DRenderer.render(this.scene, this.camera);
     };
 
     const animate = (_currentTime: number = 0): void => {
       // Camera controls
       const delta = clock.getDelta();
       this.cameraControls.update(delta);
-      camera.updateMatrixWorld();
+      this.camera.updateMatrixWorld();
 
       this.network.update(delta);
 
