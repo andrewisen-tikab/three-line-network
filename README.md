@@ -61,3 +61,9 @@ Examples can be found in the `examples` folder.
 Deployed demo can be found at:
 
 [https://andrewisen-tikab.github.io/three-line-network/examples/](https://andrewisen-tikab.github.io/three-line-network/examples/)
+
+## Docs
+
+Auto-generated docs can be found at:
+
+[https://andrewisen-tikab.github.io/three-line-network/docs/](https://andrewisen-tikab.github.io/three-line-network/docs/)
